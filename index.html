@@ -400,6 +400,7 @@
           <div class="weather-val" id="wr-whitby">Rain: --</div>
         </div>
       </div>
+      <p id="weatherNote" style="font-size: 0.8rem; color: #64748b; margin: 10px 0 0;"></p>
     </div>
 
     <!-- Route and Target Timings -->
@@ -510,13 +511,18 @@
       }
     });
 
-    // Location coordinates
+    // Hike date (used for both the time badges and the forecast request)
+    const TRIP_DATE = '2026-10-03';
+    const TRIP_NEXT_DAY = '2026-10-04'; // so late finishes past midnight still have data
+
+    // Location coordinates and target slot (minutes after start time).
+    // The same slot drives the card label and the forecast hour, so they always match.
     const locations = [
-      { id: 'scarborough', name: 'Scarborough', lat: 54.2831, lon: -0.3998, offsetMins: 0 },
-      { id: 'cloughton', name: 'Cloughton', lat: 54.3381, lon: -0.4485, offsetMins: 135 },
-      { id: 'ravenscar', name: 'Ravenscar', lat: 54.3986, lon: -0.4883, offsetMins: 240 },
-      { id: 'bay', name: "Robin Hood's Bay", lat: 54.4344, lon: -0.5338, offsetMins: 360 },
-      { id: 'whitby', name: 'Whitby', lat: 54.4858, lon: -0.6145, offsetMins: 570 }
+      { id: 'scarborough', name: 'Scarborough',      lat: 54.2831, lon: -0.3998, slotStart: 0,   slotEnd: 60  },
+      { id: 'cloughton',   name: 'Cloughton',        lat: 54.3381, lon: -0.4485, slotStart: 120, slotEnd: 180 },
+      { id: 'ravenscar',   name: 'Ravenscar',        lat: 54.3986, lon: -0.4883, slotStart: 210, slotEnd: 270 },
+      { id: 'bay',         name: "Robin Hood's Bay", lat: 54.4344, lon: -0.5338, slotStart: 330, slotEnd: 390 },
+      { id: 'whitby',      name: 'Whitby',           lat: 54.4858, lon: -0.6145, slotStart: 540, slotEnd: 600 }
     ];
 
     // Seasonal baseline weather defaults for October in North Yorkshire
@@ -538,6 +544,12 @@
       return hours + ':' + minutes;
     }
 
+    // Convert wind direction in degrees to a 16-point compass label
+    function compass(deg) {
+      const pts = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+      return pts[Math.round(deg / 22.5) % 16];
+    }
+
     function updateTimes() {
       const startInput = document.getElementById('startTime').value;
       if (!startInput) return;
@@ -550,52 +562,81 @@
       document.getElementById('t-abbey').innerText = addMinutes(startInput, 540) + ' - ' + addMinutes(startInput, 570);
       document.getElementById('t-finish').innerText = addMinutes(startInput, 585) + '+';
 
-      // Update weather target slot titles
-      document.getElementById('ws-scarborough').innerText = addMinutes(startInput, 0) + ' - ' + addMinutes(startInput, 60);
-      document.getElementById('ws-cloughton').innerText = addMinutes(startInput, 120) + ' - ' + addMinutes(startInput, 180);
-      document.getElementById('ws-ravenscar').innerText = addMinutes(startInput, 210) + ' - ' + addMinutes(startInput, 270);
-      document.getElementById('ws-bay').innerText = addMinutes(startInput, 330) + ' - ' + addMinutes(startInput, 390);
-      document.getElementById('ws-whitby').innerText = addMinutes(startInput, 540) + ' - ' + addMinutes(startInput, 600);
+      // Update weather target slot titles from the shared slot definitions
+      for (const loc of locations) {
+        document.getElementById(`ws-${loc.id}`).innerText =
+          addMinutes(startInput, loc.slotStart) + ' - ' + addMinutes(startInput, loc.slotEnd);
+      }
 
       // Fetch / update weather data
       fetchOpenMeteoData(startInput);
     }
 
+    function applyFallback(loc) {
+      const fb = baselineWx[loc.id];
+      document.getElementById(`wt-${loc.id}`).innerText = `~${fb.temp}°C (typical)`;
+      document.getElementById(`ww-${loc.id}`).innerText = `Wind: ~${fb.wind}`;
+      document.getElementById(`wc-${loc.id}`).innerText = `Cloud: ~${fb.cloud}`;
+      document.getElementById(`wr-${loc.id}`).innerText = `Rain: ~${fb.rain}`;
+    }
+
     async function fetchOpenMeteoData(startInput) {
+      const note = document.getElementById('weatherNote');
       const parts = startInput.split(':');
-      const startHour = parseInt(parts[0], 10);
+      const startMins = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
 
-      for (const loc of locations) {
-        const targetHour = (startHour + Math.floor(loc.offsetMins / 60)) % 24;
-        
-        try {
-          const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m&wind_speed_unit=mph&forecast_days=1`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('API offline or out of window');
-          
-          const data = await res.json();
-          if (data && data.hourly && data.hourly.temperature_2m) {
-            const temp = Math.round(data.hourly.temperature_2m[targetHour]);
-            const wind = Math.round(data.hourly.wind_speed_10m[targetHour]);
-            const cloud = data.hourly.cloud_cover[targetHour];
-            const rain = data.hourly.precipitation[targetHour];
+      // One request for all locations: Open-Meteo accepts comma-separated coordinates
+      // and returns an array of results in the same order.
+      const url = 'https://api.open-meteo.com/v1/forecast'
+        + '?latitude=' + locations.map(l => l.lat).join(',')
+        + '&longitude=' + locations.map(l => l.lon).join(',')
+        + '&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m'
+        + '&wind_speed_unit=mph'
+        + '&timezone=Europe%2FLondon'
+        + '&start_date=' + TRIP_DATE
+        + '&end_date=' + TRIP_NEXT_DAY;
 
-            document.getElementById(`wt-${loc.id}`).innerText = `${temp}°C`;
-            document.getElementById(`ww-${loc.id}`).innerText = `Wind: ${wind} mph`;
-            document.getElementById(`wc-${loc.id}`).innerText = `Cloud: ${cloud}%`;
-            document.getElementById(`wr-${loc.id}`).innerText = `Rain: ${rain} mm`;
-            continue;
-          }
-        } catch (e) {
-          // Fallback to baseline default data
+      let results = null;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('API offline or date out of forecast range');
+        const json = await res.json();
+        results = Array.isArray(json) ? json : [json];
+      } catch (e) {
+        results = null; // fall back below
+      }
+
+      let liveCount = 0;
+      locations.forEach((loc, i) => {
+        const h = results && results[i] && results[i].hourly;
+        // Hour index from the slot midpoint, rounded to the nearest hour.
+        // Index 0 = 00:00 on TRIP_DATE, 24 = 00:00 the next day.
+        const midMins = startMins + (loc.slotStart + loc.slotEnd) / 2;
+        const idx = Math.round(midMins / 60);
+
+        if (h && h.temperature_2m && h.temperature_2m[idx] != null) {
+          const temp = Math.round(h.temperature_2m[idx]);
+          const wind = Math.round(h.wind_speed_10m[idx]);
+          const dir = compass(h.wind_direction_10m[idx]);
+          const cloud = h.cloud_cover[idx];
+          const rain = h.precipitation[idx];
+
+          document.getElementById(`wt-${loc.id}`).innerText = `${temp}°C`;
+          document.getElementById(`ww-${loc.id}`).innerText = `Wind: ${wind} mph ${dir}`;
+          document.getElementById(`wc-${loc.id}`).innerText = `Cloud: ${cloud}%`;
+          document.getElementById(`wr-${loc.id}`).innerText = `Rain: ${rain} mm`;
+          liveCount++;
+        } else {
+          applyFallback(loc);
         }
+      });
 
-        // Apply fallback data if API is out of window / offline
-        const fallback = baselineWx[loc.id];
-        document.getElementById(`wt-${loc.id}`).innerText = `${fallback.temp}°C`;
-        document.getElementById(`ww-${loc.id}`).innerText = `Wind: ${fallback.wind}`;
-        document.getElementById(`wc-${loc.id}`).innerText = `Cloud: ${fallback.cloud}`;
-        document.getElementById(`wr-${loc.id}`).innerText = `Rain: ${fallback.rain}`;
+      if (liveCount === locations.length) {
+        note.innerText = 'Live forecast for 3 Oct 2026 from Open-Meteo (UK time).';
+      } else if (liveCount === 0) {
+        note.innerText = 'Live forecast unavailable, showing typical October conditions (marked ~) instead.';
+      } else {
+        note.innerText = 'Some live data unavailable, locations marked ~ show typical October conditions.';
       }
     }
 
