@@ -46,38 +46,39 @@
 
     /* Sticky Header Navigation Bar */
     .header-nav {
-        position: sticky;
-        top: 10px;
-        z-index: 1000;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 20px;
-        padding: 10px 12px;
-        background: rgba(30, 58, 138, 0.92);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        transition: all 0.25s ease-in-out; /* Added smooth transition */
-        }
+      position: sticky;
+      top: 10px;
+      z-index: 1000;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 10px 12px;
+      background: rgba(30, 58, 138, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease-in-out;
+    }
 
-        /* Mobile Minimised Navigation on Scroll */
-        @media (max-width: 640px) {
-        .header-nav.scrolled {
-            justify-content: space-around;
-            padding: 6px 8px;
-            gap: 4px;
-        }
-        .header-nav.scrolled .nav-box {
-            padding: 8px 10px;
-            border-radius: 6px;
-        }
-        .header-nav.scrolled .nav-box span {
-            display: none; /* Hides text labels, keeping only icons */
-        }
-        }
+    /* Mobile Minimised Navigation on Scroll */
+    @media (max-width: 640px) {
+      .header-nav.scrolled {
+        justify-content: space-around;
+        padding: 6px 8px;
+        gap: 4px;
+      }
+      .header-nav.scrolled .nav-box {
+        padding: 8px 10px;
+        border-radius: 6px;
+      }
+      .header-nav.scrolled .nav-box span {
+        display: none; /* Hides text labels, keeping only icons */
+      }
+    }
+
     .nav-box {
       display: inline-flex;
       align-items: center;
@@ -290,25 +291,25 @@
 
     <!-- Sticky Navigation Bar -->
     <nav class="header-nav" id="mainNav" aria-label="Section Navigation">
-        <a href="#details" class="nav-box">
-            <svg viewBox="0 0 24 24"><path d="..."/></svg>
-        <span>Key Details</span>
-        </a>
+      <a href="#details" class="nav-box">
+        <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        <span>Info</span>
+      </a>
       <a href="#parking" class="nav-box">
         <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
-        Parking
+        <span>Parking</span>
       </a>
       <a href="#map-section" class="nav-box">
         <svg viewBox="0 0 24 24"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
-        Route Map
+        <span>Map</span>
       </a>
       <a href="#weather-section" class="nav-box">
         <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>
-        Weather
+        <span>Weather</span>
       </a>
       <a href="#route-section" class="nav-box">
         <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm3.3 14.71L11 12.41V7h2v4.59l3.71 3.71-1.42 1.41z"/></svg>
-        Itinerary &amp; Food
+        <span>Times</span>
       </a>
     </nav>
 
@@ -499,6 +500,16 @@
   </div>
 
   <script>
+    // Toggle scrolled class on navigation on scroll
+    const mainNav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        mainNav.classList.add('scrolled');
+      } else {
+        mainNav.classList.remove('scrolled');
+      }
+    });
+
     // Location coordinates
     const locations = [
       { id: 'scarborough', name: 'Scarborough', lat: 54.2831, lon: -0.3998, offsetMins: 0 },
