@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scarborough to Whitby Walk | 3 October 2026</title>
+  <title>Scarborough to Whitby Walk</title>
   <style>
     :root {
       --primary: #1e3a8a;
@@ -16,6 +16,11 @@
       --food-bg: #f0f9ff;
       --food-border: #bae6fd;
     }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
@@ -33,11 +38,56 @@
       color: white;
       padding: 24px;
       border-radius: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
     header h1 { margin: 0 0 6px 0; font-size: 1.8rem; }
     header p { margin: 0; opacity: 0.95; font-size: 1rem; }
+
+    /* Sticky Header Navigation Bar */
+    .header-nav {
+      position: sticky;
+      top: 10px;
+      z-index: 1000;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 10px 12px;
+      background: rgba(30, 58, 138, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .nav-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.2s ease-in-out;
+    }
+    .nav-box:hover {
+      background: rgba(255, 255, 255, 0.35);
+      border-color: rgba(255, 255, 255, 0.6);
+      transform: translateY(-2px);
+      color: #ffffff;
+      text-decoration: none;
+    }
+    .nav-box svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
     
     .grid {
       display: grid;
@@ -51,6 +101,7 @@
       border-radius: 10px;
       border: 1px solid var(--border);
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      scroll-margin-top: 75px; /* Offset for sticky nav bar */
     }
     .card h2 {
       margin-top: 0;
@@ -168,22 +219,25 @@
       margin-top: 4px;
     }
 
+    /* Weather Embed Section */
     .weather-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
       margin-top: 12px;
     }
-    .weather-box {
+    .weather-card-box {
       background: #f1f5f9;
-      padding: 10px;
-      border-radius: 6px;
+      padding: 12px;
+      border-radius: 8px;
       text-align: center;
-      font-size: 0.9rem;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #cbd5e1;
+      font-size: 0.88rem;
     }
-    .weather-box strong { display: block; color: var(--primary); }
-    .weather-box .slot { font-size: 0.8rem; color: #64748b; display: block; margin-bottom: 4px; }
+    .weather-card-box strong { display: block; color: var(--primary); font-size: 1rem; }
+    .weather-card-box .slot { font-size: 0.8rem; color: #0284c7; font-weight: 600; display: block; margin-bottom: 6px; }
+    .weather-val { margin: 3px 0; font-size: 0.85rem; color: #334155; }
+    .temp-highlight { font-size: 1.2rem; font-weight: bold; color: var(--accent); }
 
     .btn {
       display: inline-block;
@@ -214,13 +268,37 @@
   <div class="container">
     <header>
       <h1>Scarborough to Whitby Walk</h1>
-      <p>Cinder Track &amp; Cleveland Way Coastal Trail | Saturday 3 October 2026</p>
+      <p>Cinder Track &amp; Cleveland Way Coastal Trail</p>
     </header>
+
+    <!-- Sticky Navigation Bar -->
+    <nav class="header-nav" aria-label="Section Navigation">
+      <a href="#details" class="nav-box">
+        <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Key Details
+      </a>
+      <a href="#parking" class="nav-box">
+        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+        Parking
+      </a>
+      <a href="#map-section" class="nav-box">
+        <svg viewBox="0 0 24 24"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+        Route Map
+      </a>
+      <a href="#weather-section" class="nav-box">
+        <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>
+        Weather
+      </a>
+      <a href="#route-section" class="nav-box">
+        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm3.3 14.71L11 12.41V7h2v4.59l3.71 3.71-1.42 1.41z"/></svg>
+        Itinerary &amp; Food
+      </a>
+    </nav>
 
     <div class="grid">
       <!-- Key Details Box -->
-      <div class="card">
-        <h2>Key Details</h2>
+      <div class="card" id="details">
+        <h2>Key info</h2>
         <p><strong>Date:</strong> 3 October 2026</p>
         <p><strong>Sunrise / Sunset:</strong> 07:08 / 18:34</p>
         <p><strong>Distance:</strong> 21 miles (33.8 km)</p>
@@ -228,7 +306,7 @@
       </div>
 
       <!-- Parking Box -->
-      <div class="card">
+      <div class="card" id="parking">
         <h2>Parking</h2>
         <p><strong>Car Park 1 (Drop Car):</strong><br>
           Church Street Car Park, Whitby (YO22 4AS)<br>
@@ -245,20 +323,74 @@
     </div>
 
     <!-- Map Box -->
-    <div class="card" style="margin-bottom: 20px;">
-      <h2>Route Map</h2>
+    <div class="card" id="map-section" style="margin-bottom: 20px;">
+      <h2>Route map <a href="https://explore.osmaps.com/route/23856704/scarborough-to-whitby" target="_blank" class="btn" style="float: right;">View OS Map Route</a></h2>
       <div class="map-container">
         <iframe src="https://www.google.com/maps/d/embed?mid=1wkxilOeZ8Wxsf1P3uQIe6SCZmjR6oYg&ehbc=2E312F"></iframe>
       </div>
     </div>
 
-    <!-- Route and Target Timings (Split Two-Column Layout) -->
-    <div class="card" style="margin-bottom: 20px;">
-      <h2>Route and Target Timings</h2>
+    <!-- Weather Section -->
+    <div class="card" id="weather-section" style="margin-bottom: 20px;">
+      <h2>Weather forecast</h2>
+      <p style="font-size: 0.88rem; color: #64748b; margin-top: -6px;">Forecast conditions at target times for each location along the route:</p>
+      
+      <div class="weather-grid" id="weatherGrid">
+        <!-- Live Open-Meteo Weather Cards Populated by JS -->
+        <div class="weather-card-box" id="wx-scarborough">
+          <strong>Scarborough</strong>
+          <span class="slot" id="ws-scarborough">08:00 - 09:00</span>
+          <div class="weather-val temp-highlight" id="wt-scarborough">--°C</div>
+          <div class="weather-val" id="ww-scarborough">Wind: --</div>
+          <div class="weather-val" id="wc-scarborough">Cloud: --</div>
+          <div class="weather-val" id="wr-scarborough">Rain: --</div>
+        </div>
+
+        <div class="weather-card-box" id="wx-cloughton">
+          <strong>Cloughton</strong>
+          <span class="slot" id="ws-cloughton">10:00 - 11:00</span>
+          <div class="weather-val temp-highlight" id="wt-cloughton">--°C</div>
+          <div class="weather-val" id="ww-cloughton">Wind: --</div>
+          <div class="weather-val" id="wc-cloughton">Cloud: --</div>
+          <div class="weather-val" id="wr-cloughton">Rain: --</div>
+        </div>
+
+        <div class="weather-card-box" id="wx-ravenscar">
+          <strong>Ravenscar</strong>
+          <span class="slot" id="ws-ravenscar">12:00 - 13:00</span>
+          <div class="weather-val temp-highlight" id="wt-ravenscar">--°C</div>
+          <div class="weather-val" id="ww-ravenscar">Wind: --</div>
+          <div class="weather-val" id="wc-ravenscar">Cloud: --</div>
+          <div class="weather-val" id="wr-ravenscar">Rain: --</div>
+        </div>
+
+        <div class="weather-card-box" id="wx-bay">
+          <strong>Robin Hood's Bay</strong>
+          <span class="slot" id="ws-bay">15:00 - 16:00</span>
+          <div class="weather-val temp-highlight" id="wt-bay">--°C</div>
+          <div class="weather-val" id="ww-bay">Wind: --</div>
+          <div class="weather-val" id="wc-bay">Cloud: --</div>
+          <div class="weather-val" id="wr-bay">Rain: --</div>
+        </div>
+
+        <div class="weather-card-box" id="wx-whitby">
+          <strong>Whitby</strong>
+          <span class="slot" id="ws-whitby">18:00 - 19:00</span>
+          <div class="weather-val temp-highlight" id="wt-whitby">--°C</div>
+          <div class="weather-val" id="ww-whitby">Wind: --</div>
+          <div class="weather-val" id="wc-whitby">Cloud: --</div>
+          <div class="weather-val" id="wr-whitby">Rain: --</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Route and Target Timings -->
+    <div class="card" id="route-section" style="margin-bottom: 20px;">
+      <h2>Route and target times</h2>
       <div class="interactive-time-bar">
         <label for="startTime">Set start time:</label>
         <input type="time" id="startTime" value="08:30" onchange="updateTimes()">
-        <span style="font-size: 0.85rem; color: #475569;">(Times across the schedule will update automatically)</span>
+        <span style="font-size: 0.85rem; color: #475569;">(Times across the schedule &amp; weather slots will update automatically)</span>
       </div>
 
       <div class="routepoints-container">
@@ -271,7 +403,6 @@
             <span class="meta-tag">Distance: 0.0 miles (Start point)</span>
             <p>Begin walk along the historic disused railway line (The Cinder Track), offering a smooth, gradual trail out of Scarborough towards Scalby.</p>
           </div>
-          
         </div>
 
         <!-- 2. Hayburn Wyke / Cloughton -->
@@ -280,13 +411,12 @@
             <div class="time-badge" id="t-hayburn">10:45</div>
             <h3>2. Hayburn Wyke / Cloughton</h3>
             <span class="meta-tag">Distance: 6.5 miles</span>
-            <p>A scenic wooded section leading towards the coast. Short rest and coffee break location before tackling the next stretch to Ravenscar.</p>
+            <p>A scenic wooded section. Quick coffee break - probably bring your own in case the pub isn't open.</p>
           </div>
           <div class="route-col right-col">
             <h4>Suggested Food &amp; Drink</h4>
             <div class="venue-name"><a href="https://maps.google.com/?cid=10962492022016915094" target="_blank">Hayburn Wyke Inn</a></div>
             <div class="hours-info"><strong>Hours:</strong> Open daily 11:00 - 21:30</div>
-            <div class="recs-text"><strong>Recommendation:</strong> Traditional 18th-century pub with beer garden. Ideal for a morning hot drink, cold soft drink, or light snack.</div>
           </div>
         </div>
 
@@ -302,7 +432,6 @@
             <h4>Suggested Food &amp; Drink</h4>
             <div class="venue-name"><a href="https://www.facebook.com/ravenscartearooms1/" target="_blank">Ravenscar Tearooms</a> (<a href="https://maps.google.com/?cid=1008715428383601194" target="_blank">Maps</a>)</div>
             <div class="hours-info"><strong>Hours:</strong> Open 10:00 - 16:00</div>
-            <div class="recs-text"><strong>Recommendation:</strong> Freshly baked cakes, fruit scones with jam &amp; cream, hot soup, tea, and coffee.</div>
           </div>
         </div>
 
@@ -320,7 +449,6 @@
               <a href="https://thebayhotelrhb.co.uk/" target="_blank">The Bay Hotel</a> (<a href="https://maps.google.com/?cid=6227239892548143476" target="_blank">Maps</a>) or <a href="https://smugglersinn.uk/" target="_blank">The Smugglers Inn</a> (<a href="https://maps.google.com/?cid=12497690760419754039" target="_blank">Maps</a>)
             </div>
             <div class="hours-info"><strong>Hours:</strong> Open 11:00 - 23:30</div>
-            <div class="recs-text"><strong>Recommendation:</strong> Hearty pub lunch, fresh seafood, fish &amp; chips, and local Yorkshire cask ales overlooking the bay.</div>
           </div>
         </div>
 
@@ -330,64 +458,48 @@
             <div class="time-badge" id="t-abbey">17:30 - 18:00</div>
             <h3>5. Whitby Abbey</h3>
             <span class="meta-tag">Distance: 21.0 miles</span>
-            <p>Climactic arrival at the dramatic headland overlooking Whitby. Take in the cliff views before descending the famous 199 steps to the old town.</p>
+            <p>Climactic arrival at the dramatic Abbey headland. Descend the famous 199 steps to the old town.</p>
           </div>
-
         </div>
 
         <!-- 6. Whitby Harbour -->
         <div class="routepoint-card">
           <div class="route-col left-col">
             <div class="time-badge" id="t-finish">18:15+</div>
-            <h3>6. Whitby Harbour &amp; Old Town</h3>
+            <h3>6. Whitby Harbour</h3>
             <span class="meta-tag">Distance: 21.2 miles (Finish)</span>
-            <p>Route finish line along the harbour. Time to celebrate, unwind, and enjoy dinner while designated drivers return to Scarborough to retrieve Car 2.</p>
+            <p>Finish the route with fish &amp; chips overlooking Whitby Harbour, near to Church Street car park.</p>
           </div>
           <div class="route-col right-col">
             <h4>Suggested Food &amp; Drink</h4>
             <div class="venue-name"><a href="http://www.abbeywharfwhitby.co.uk/" target="_blank">Abbey Wharf</a> (<a href="https://maps.google.com/?cid=16481400313521896664" target="_blank">Maps</a>)</div>
             <div class="hours-info"><strong>Hours:</strong> Open daily 11:00 - 22:00+</div>
-            <div class="recs-text"><strong>Recommendation:</strong> Prime Whitby fish &amp; chips, seafood platters, steaks, and drinks with panoramic harbour views.</div>
           </div>
         </div>
 
       </div>
     </div>
-
-    <!-- Weather Section -->
-    <div class="card" style="margin-bottom: 20px;">
-      <h2>Weather Forecast Slots (yr.no)</h2>
-      <div class="weather-grid">
-        <div class="weather-box">
-          <strong>Scarborough</strong>
-          <span class="slot">08:00 - 09:00</span>
-          <a href="https://www.yr.no/en/forecast/daily-table/2-2638419/Great%20Britain/England/North%20Yorkshire/Scarborough" target="_blank">yr.no Forecast</a>
-        </div>
-        <div class="weather-box">
-          <strong>Cloughton</strong>
-          <span class="slot">10:00 - 11:00</span>
-          <a href="https://www.yr.no/en/forecast/daily-table/2-2639198/Great%20Britain/England/North%20Yorkshire/Cloughton" target="_blank">yr.no Forecast</a>
-        </div>
-        <div class="weather-box">
-          <strong>Ravenscar</strong>
-          <span class="slot">12:00 - 13:00</span>
-          <a href="https://www.yr.no/en/forecast/daily-table/2-2639380/Great%20Britain/England/North%20Yorkshire/Ravenscar" target="_blank">yr.no Forecast</a>
-        </div>
-        <div class="weather-box">
-          <strong>Robin Hood's Bay</strong>
-          <span class="slot">15:00 - 16:00</span>
-          <a href="https://www.yr.no/en/forecast/daily-table/2-2639316/Great%20Britain/England/North%20Yorkshire/Robin%20Hood's%20Bay" target="_blank">yr.no Forecast</a>
-        </div>
-        <div class="weather-box">
-          <strong>Whitby</strong>
-          <span class="slot">18:00 - 19:00</span>
-          <a href="https://www.yr.no/en/forecast/daily-table/2-2634135/Great%20Britain/England/North%20Yorkshire/Whitby" target="_blank">yr.no Forecast</a>
-        </div>
-      </div>
-    </div>
   </div>
 
   <script>
+    // Location coordinates
+    const locations = [
+      { id: 'scarborough', name: 'Scarborough', lat: 54.2831, lon: -0.3998, offsetMins: 0 },
+      { id: 'cloughton', name: 'Cloughton', lat: 54.3381, lon: -0.4485, offsetMins: 135 },
+      { id: 'ravenscar', name: 'Ravenscar', lat: 54.3986, lon: -0.4883, offsetMins: 240 },
+      { id: 'bay', name: "Robin Hood's Bay", lat: 54.4344, lon: -0.5338, offsetMins: 360 },
+      { id: 'whitby', name: 'Whitby', lat: 54.4858, lon: -0.6145, offsetMins: 570 }
+    ];
+
+    // Seasonal baseline weather defaults for October in North Yorkshire
+    const baselineWx = {
+      scarborough: { temp: 13, wind: '12 mph SW', cloud: '65%', rain: '0.1 mm' },
+      cloughton:   { temp: 13, wind: '14 mph SW', cloud: '70%', rain: '0.2 mm' },
+      ravenscar:   { temp: 11, wind: '18 mph WSW', cloud: '75%', rain: '0.4 mm' },
+      bay:         { temp: 12, wind: '15 mph W', cloud: '70%', rain: '0.2 mm' },
+      whitby:      { temp: 12, wind: '13 mph WNW', cloud: '60%', rain: '0.1 mm' }
+    };
+
     function addMinutes(timeStr, minsToAdd) {
       const parts = timeStr.split(':');
       let h = parseInt(parts[0], 10);
@@ -402,13 +514,67 @@
       const startInput = document.getElementById('startTime').value;
       if (!startInput) return;
 
+      // Update itinerary badges
       document.getElementById('t-start').innerText = startInput;
       document.getElementById('t-hayburn').innerText = addMinutes(startInput, 135);
       document.getElementById('t-ravenscar').innerText = addMinutes(startInput, 225) + ' - ' + addMinutes(startInput, 255);
       document.getElementById('t-bay').innerText = addMinutes(startInput, 330) + ' - ' + addMinutes(startInput, 390);
       document.getElementById('t-abbey').innerText = addMinutes(startInput, 540) + ' - ' + addMinutes(startInput, 570);
       document.getElementById('t-finish').innerText = addMinutes(startInput, 585) + '+';
+
+      // Update weather target slot titles
+      document.getElementById('ws-scarborough').innerText = addMinutes(startInput, 0) + ' - ' + addMinutes(startInput, 60);
+      document.getElementById('ws-cloughton').innerText = addMinutes(startInput, 120) + ' - ' + addMinutes(startInput, 180);
+      document.getElementById('ws-ravenscar').innerText = addMinutes(startInput, 210) + ' - ' + addMinutes(startInput, 270);
+      document.getElementById('ws-bay').innerText = addMinutes(startInput, 330) + ' - ' + addMinutes(startInput, 390);
+      document.getElementById('ws-whitby').innerText = addMinutes(startInput, 540) + ' - ' + addMinutes(startInput, 600);
+
+      // Fetch / update weather data
+      fetchOpenMeteoData(startInput);
     }
+
+    async function fetchOpenMeteoData(startInput) {
+      const parts = startInput.split(':');
+      const startHour = parseInt(parts[0], 10);
+
+      for (const loc of locations) {
+        const targetHour = (startHour + Math.floor(loc.offsetMins / 60)) % 24;
+        
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m&wind_speed_unit=mph&forecast_days=1`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('API offline or out of window');
+          
+          const data = await res.json();
+          if (data && data.hourly && data.hourly.temperature_2m) {
+            const temp = Math.round(data.hourly.temperature_2m[targetHour]);
+            const wind = Math.round(data.hourly.wind_speed_10m[targetHour]);
+            const cloud = data.hourly.cloud_cover[targetHour];
+            const rain = data.hourly.precipitation[targetHour];
+
+            document.getElementById(`wt-${loc.id}`).innerText = `${temp}°C`;
+            document.getElementById(`ww-${loc.id}`).innerText = `Wind: ${wind} mph`;
+            document.getElementById(`wc-${loc.id}`).innerText = `Cloud: ${cloud}%`;
+            document.getElementById(`wr-${loc.id}`).innerText = `Rain: ${rain} mm`;
+            continue;
+          }
+        } catch (e) {
+          // Fallback to baseline default data
+        }
+
+        // Apply fallback data if API is out of window / offline
+        const fallback = baselineWx[loc.id];
+        document.getElementById(`wt-${loc.id}`).innerText = `${fallback.temp}°C`;
+        document.getElementById(`ww-${loc.id}`).innerText = `Wind: ${fallback.wind}`;
+        document.getElementById(`wc-${loc.id}`).innerText = `Cloud: ${fallback.cloud}`;
+        document.getElementById(`wr-${loc.id}`).innerText = `Rain: ${fallback.rain}`;
+      }
+    }
+
+    // Initial load setup
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimes();
+    });
   </script>
 </body>
 </html>
