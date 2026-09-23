@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scarborough to Whitby Walk | 3 October 2026</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #0284c7;
+      --accent: #d97706;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #cbd5e1;
+      --food-bg: #f0f9ff;
+      --food-border: #bae6fd;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 16px;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    header h1 { margin: 0 0 6px 0; font-size: 1.8rem; }
+    header p { margin: 0; opacity: 0.95; font-size: 1rem; }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: var(--primary);
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 8px;
+    }
+    
+    .interactive-time-bar {
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .interactive-time-bar label { font-weight: bold; color: var(--primary); }
+    .interactive-time-bar input[type="time"] {
+      padding: 6px 10px;
+      font-size: 1rem;
+      border: 1px solid #93c5fd;
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    /* Routepoint 2-column layout */
+    .routepoints-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .routepoint-card {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    @media (max-width: 720px) {
+      .routepoint-card {
+        grid-template-columns: 1fr;
+      }
+    }
+    .route-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .left-col {
+      border-right: 1px solid var(--border);
+      padding-right: 16px;
+    }
+    @media (max-width: 720px) {
+      .left-col {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-right: 0;
+        padding-bottom: 16px;
+      }
+    }
+    .right-col {
+      background-color: var(--food-bg);
+      border: 1px solid var(--food-border);
+      padding: 14px;
+      border-radius: 8px;
+    }
+    .time-badge {
+      display: inline-block;
+      align-self: flex-start;
+      background: #fef3c7;
+      color: #92400e;
+      font-weight: bold;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      border: 1px solid #fde68a;
+    }
+    .route-col h3 {
+      margin: 4px 0 2px 0;
+      font-size: 1.1rem;
+      color: var(--primary);
+    }
+    .route-col h4 {
+      margin: 0 0 6px 0;
+      font-size: 0.85rem;
+      color: #0369a1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .meta-tag {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .venue-name {
+      font-weight: bold;
+      font-size: 0.98rem;
+      color: #0c4a6e;
+    }
+    .hours-info {
+      font-size: 0.85rem;
+      color: #0369a1;
+    }
+    .recs-text {
+      font-size: 0.88rem;
+      color: #334155;
+      margin-top: 4px;
+    }
+
+    .weather-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .weather-box {
+      background: #f1f5f9;
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.9rem;
+      border: 1px solid #e2e8f0;
+    }
+    .weather-box strong { display: block; color: var(--primary); }
+    .weather-box .slot { font-size: 0.8rem; color: #64748b; display: block; margin-bottom: 4px; }
+
+    .btn {
+      display: inline-block;
+      background: var(--secondary);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+    .btn:hover { background: var(--primary); }
+    .map-container {
+      width: 100%;
+      height: 480px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 10px;
+    }
+    iframe { width: 100%; height: 100%; border: 0; }
+    a { color: var(--secondary); text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Scarborough to Whitby Walk</h1>
+      <p>Cinder Track &amp; Cleveland Way Coastal Trail | Saturday 3 October 2026</p>
+    </header>
+
+    <div class="grid">
+      <!-- Key Details Box -->
+      <div class="card">
+        <h2>Key Details</h2>
+        <p><strong>Date:</strong> 3 October 2026</p>
+        <p><strong>Sunrise / Sunset:</strong> 07:08 / 18:34</p>
+        <p><strong>Distance:</strong> 21 miles (33.8 km)</p>
+        <p><strong>Target Pace / Hours:</strong> ~8 - 9 hours total</p>
+      </div>
+
+      <!-- Parking Box -->
+      <div class="card">
+        <h2>Parking</h2>
+        <p><strong>Car Park 1 (Drop Car):</strong><br>
+          Church Street Car Park, Whitby (YO22 4AS)<br>
+          Cost: £13.10 / day<br>
+          <a href="https://maps.google.com/?cid=7856055941338908069" target="_blank">Google Maps Link</a>
+        </p>
+        <p><strong>Car Park 2 (Start Walk):</strong><br>
+          <em>Option A:</em> Scarborough Station (YO11 1TN) | Cost: £8.00 / day<br>
+          <a href="https://maps.google.com/?cid=1071817590368370708" target="_blank">Station Google Maps</a><br>
+          <em>Option B:</em> Scalby (Lancaster Way, YO13 0DA - Free residential parking)<br>
+          <a href="https://maps.google.com/?cid=12790706121933365795" target="_blank">Scalby Google Maps</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Map Box -->
+    <div class="card" style="margin-bottom: 20px;">
+      <h2>Route Map</h2>
+      <div class="map-container">
+        <iframe src="https://www.google.com/maps/d/embed?mid=1wkxilOeZ8Wxsf1P3uQIe6SCZmjR6oYg&ehbc=2E312F"></iframe>
+      </div>
+    </div>
+
+    <!-- Route and Target Timings (Split Two-Column Layout) -->
+    <div class="card" style="margin-bottom: 20px;">
+      <h2>Route and Target Timings</h2>
+      <div class="interactive-time-bar">
+        <label for="startTime">Set start time:</label>
+        <input type="time" id="startTime" value="08:30" onchange="updateTimes()">
+        <span style="font-size: 0.85rem; color: #475569;">(Times across the schedule will update automatically)</span>
+      </div>
+
+      <div class="routepoints-container">
+        
+        <!-- 1. Scarborough Start -->
+        <div class="routepoint-card">
+          <div class="route-col left-col">
+            <div class="time-badge" id="t-start">08:30</div>
+            <h3>1. Scarborough (Cinder Track Start)</h3>
+            <span class="meta-tag">Distance: 0.0 miles (Start point)</span>
+            <p>Begin walk along the historic disused railway line (The Cinder Track), offering a smooth, gradual trail out of Scarborough towards Scalby.</p>
+          </div>
+          
+        </div>
+
+        <!-- 2. Hayburn Wyke / Cloughton -->
+        <div class="routepoint-card">
+          <div class="route-col left-col">
+            <div class="time-badge" id="t-hayburn">10:45</div>
+            <h3>2. Hayburn Wyke / Cloughton</h3>
+            <span class="meta-tag">Distance: 6.5 miles</span>
+            <p>A scenic wooded section leading towards the coast. Short rest and coffee break location before tackling the next stretch to Ravenscar.</p>
+          </div>
+          <div class="route-col right-col">
+            <h4>Suggested Food &amp; Drink</h4>
+            <div class="venue-name"><a href="https://maps.google.com/?cid=10962492022016915094" target="_blank">Hayburn Wyke Inn</a></div>
+            <div class="hours-info"><strong>Hours:</strong> Open daily 11:00 - 21:30</div>
+            <div class="recs-text"><strong>Recommendation:</strong> Traditional 18th-century pub with beer garden. Ideal for a morning hot drink, cold soft drink, or light snack.</div>
+          </div>
+        </div>
+
+        <!-- 3. Ravenscar -->
+        <div class="routepoint-card">
+          <div class="route-col left-col">
+            <div class="time-badge" id="t-ravenscar">12:15 - 12:45</div>
+            <h3>3. Ravenscar</h3>
+            <span class="meta-tag">Distance: 10.5 miles</span>
+            <p>Midpoint milestone high on the cliff tops. Transition point from the Cinder Track onto the rugged Cleveland Way coastal cliff path.</p>
+          </div>
+          <div class="route-col right-col">
+            <h4>Suggested Food &amp; Drink</h4>
+            <div class="venue-name"><a href="https://www.facebook.com/ravenscartearooms1/" target="_blank">Ravenscar Tearooms</a> (<a href="https://maps.google.com/?cid=1008715428383601194" target="_blank">Maps</a>)</div>
+            <div class="hours-info"><strong>Hours:</strong> Open 10:00 - 16:00</div>
+            <div class="recs-text"><strong>Recommendation:</strong> Freshly baked cakes, fruit scones with jam &amp; cream, hot soup, tea, and coffee.</div>
+          </div>
+        </div>
+
+        <!-- 4. Robin Hood's Bay -->
+        <div class="routepoint-card">
+          <div class="route-col left-col">
+            <div class="time-badge" id="t-bay">14:00 - 15:00</div>
+            <h3>4. Robin Hood's Bay</h3>
+            <span class="meta-tag">Distance: 14.0 miles</span>
+            <p>Steep scenic descent into the historic cobblestone fishing village and beach harbour. Designated stop for main sit-down lunch.</p>
+          </div>
+          <div class="route-col right-col">
+            <h4>Suggested Food &amp; Drink</h4>
+            <div class="venue-name">
+              <a href="https://thebayhotelrhb.co.uk/" target="_blank">The Bay Hotel</a> (<a href="https://maps.google.com/?cid=6227239892548143476" target="_blank">Maps</a>) or <a href="https://smugglersinn.uk/" target="_blank">The Smugglers Inn</a> (<a href="https://maps.google.com/?cid=12497690760419754039" target="_blank">Maps</a>)
+            </div>
+            <div class="hours-info"><strong>Hours:</strong> Open 11:00 - 23:30</div>
+            <div class="recs-text"><strong>Recommendation:</strong> Hearty pub lunch, fresh seafood, fish &amp; chips, and local Yorkshire cask ales overlooking the bay.</div>
+          </div>
+        </div>
+
+        <!-- 5. Whitby Abbey -->
+        <div class="routepoint-card">
+          <div class="route-col left-col">
+            <div class="time-badge" id="t-abbey">17:30 - 18:00</div>
+            <h3>5. Whitby Abbey</h3>
+            <span class="meta-tag">Distance: 21.0 miles</span>
+            <p>Climactic arrival at the dramatic headland overlooking Whitby. Take in the cliff views before descending the famous 199 steps to the old town.</p>
+          </div>
+
+        </div>
+
+        <!-- 6. Whitby Harbour -->
+        <div class="routepoint-card">
+          <div class="route-col left-col">
+            <div class="time-badge" id="t-finish">18:15+</div>
+            <h3>6. Whitby Harbour &amp; Old Town</h3>
+            <span class="meta-tag">Distance: 21.2 miles (Finish)</span>
+            <p>Route finish line along the harbour. Time to celebrate, unwind, and enjoy dinner while designated drivers return to Scarborough to retrieve Car 2.</p>
+          </div>
+          <div class="route-col right-col">
+            <h4>Suggested Food &amp; Drink</h4>
+            <div class="venue-name"><a href="http://www.abbeywharfwhitby.co.uk/" target="_blank">Abbey Wharf</a> (<a href="https://maps.google.com/?cid=16481400313521896664" target="_blank">Maps</a>)</div>
+            <div class="hours-info"><strong>Hours:</strong> Open daily 11:00 - 22:00+</div>
+            <div class="recs-text"><strong>Recommendation:</strong> Prime Whitby fish &amp; chips, seafood platters, steaks, and drinks with panoramic harbour views.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Weather Section -->
+    <div class="card" style="margin-bottom: 20px;">
+      <h2>Weather Forecast Slots (yr.no)</h2>
+      <div class="weather-grid">
+        <div class="weather-box">
+          <strong>Scarborough</strong>
+          <span class="slot">08:00 - 09:00</span>
+          <a href="https://www.yr.no/en/forecast/daily-table/2-2638419/Great%20Britain/England/North%20Yorkshire/Scarborough" target="_blank">yr.no Forecast</a>
+        </div>
+        <div class="weather-box">
+          <strong>Cloughton</strong>
+          <span class="slot">10:00 - 11:00</span>
+          <a href="https://www.yr.no/en/forecast/daily-table/2-2639198/Great%20Britain/England/North%20Yorkshire/Cloughton" target="_blank">yr.no Forecast</a>
+        </div>
+        <div class="weather-box">
+          <strong>Ravenscar</strong>
+          <span class="slot">12:00 - 13:00</span>
+          <a href="https://www.yr.no/en/forecast/daily-table/2-2639380/Great%20Britain/England/North%20Yorkshire/Ravenscar" target="_blank">yr.no Forecast</a>
+        </div>
+        <div class="weather-box">
+          <strong>Robin Hood's Bay</strong>
+          <span class="slot">15:00 - 16:00</span>
+          <a href="https://www.yr.no/en/forecast/daily-table/2-2639316/Great%20Britain/England/North%20Yorkshire/Robin%20Hood's%20Bay" target="_blank">yr.no Forecast</a>
+        </div>
+        <div class="weather-box">
+          <strong>Whitby</strong>
+          <span class="slot">18:00 - 19:00</span>
+          <a href="https://www.yr.no/en/forecast/daily-table/2-2634135/Great%20Britain/England/North%20Yorkshire/Whitby" target="_blank">yr.no Forecast</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function addMinutes(timeStr, minsToAdd) {
+      const parts = timeStr.split(':');
+      let h = parseInt(parts[0], 10);
+      let m = parseInt(parts[1], 10);
+      let date = new Date(2026, 9, 3, h, m + minsToAdd);
+      let hours = String(date.getHours()).padStart(2, '0');
+      let minutes = String(date.getMinutes()).padStart(2, '0');
+      return hours + ':' + minutes;
+    }
+
+    function updateTimes() {
+      const startInput = document.getElementById('startTime').value;
+      if (!startInput) return;
+
+      document.getElementById('t-start').innerText = startInput;
+      document.getElementById('t-hayburn').innerText = addMinutes(startInput, 135);
+      document.getElementById('t-ravenscar').innerText = addMinutes(startInput, 225) + ' - ' + addMinutes(startInput, 255);
+      document.getElementById('t-bay').innerText = addMinutes(startInput, 330) + ' - ' + addMinutes(startInput, 390);
+      document.getElementById('t-abbey').innerText = addMinutes(startInput, 540) + ' - ' + addMinutes(startInput, 570);
+      document.getElementById('t-finish').innerText = addMinutes(startInput, 585) + '+';
+    }
+  </script>
+</body>
+</html>
