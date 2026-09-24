@@ -370,14 +370,23 @@
 
       <div class="route-notices" id="route-notices">
         <h3>Route notices</h3>
+        <p class="checked">Last checked 23 Sep 2026. Diversions can change, so re-check the official page the day before.</p>
+
+        <div class="notice">
+          <strong>Temporary diversion: stair upgrade south of Robin Hood&rsquo;s Bay</strong>
+          Listed on the official Cleveland Way page as a temporary diversion for stair upgrade works. Check the official page for the current detail and end date before you set off.
+        </div>
 
         <div class="notice info">
-          <strong>Robin Hood&rsquo;s Bay erosion diversion </strong>
+          <strong>Robin Hood&rsquo;s Bay erosion diversion (in place since July 2021)</strong>
           The Cleveland Way and England Coast Path are diverted inland at the eastern end of Mount Pleasant North, across Rocket Post Field and down an accessible ramp onto a short stretch of the Cinder Track into the village.
         </div>
 
+        <p style="font-size: 0.82rem; color: #64748b; margin: 0;">The other diversions listed on the official page (Skelton and the Lady Chapel) are outside the Scarborough to Whitby section.</p>
+
         <div class="notice-links">
           <a href="https://www.nationaltrail.co.uk/en_GB/trails/cleveland-way/trail-information/" target="_blank" rel="noopener" class="btn">Official trail info &amp; diversions</a>
+          <a href="https://www.nationaltrail.co.uk/en_GB/short-routes/diversion-of-the-cleveland-way-and-england-coast-path-at-robin-hoods-bay-due-to-coastal-erosion/?trail=cleveland-way" target="_blank" rel="noopener" class="btn">Robin Hood&rsquo;s Bay diversion details</a>
         </div>
       </div>
     </div>
@@ -556,6 +565,8 @@
     });
 
     // Hike date (used for both the time badges and the forecast request)
+    const START_TIME_KEY = 'hike-start-time';
+
     const TRIP_DATE = '2026-10-03';
     const TRIP_NEXT_DAY = '2026-10-04'; // so late finishes past midnight still have data
 
@@ -597,6 +608,9 @@
     function updateTimes() {
       const startInput = document.getElementById('startTime').value;
       if (!startInput) return;
+
+      // Remember the start time across page refreshes
+      try { localStorage.setItem(START_TIME_KEY, startInput); } catch (e) { /* storage unavailable */ }
 
       // Update itinerary badges
       document.getElementById('t-start').innerText = startInput;
@@ -723,6 +737,13 @@
 
     // Initial load setup
     window.addEventListener('DOMContentLoaded', () => {
+      // Restore a previously saved start time (falls back to the default in the HTML)
+      try {
+        const saved = localStorage.getItem(START_TIME_KEY);
+        if (saved && /^\d{2}:\d{2}$/.test(saved)) {
+          document.getElementById('startTime').value = saved;
+        }
+      } catch (e) { /* storage unavailable */ }
       updateTimes();
     });
   </script>
