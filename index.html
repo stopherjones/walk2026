@@ -256,6 +256,8 @@
     .weather-card-box .slot { font-size: 0.8rem; color: #0284c7; font-weight: 600; display: block; margin-bottom: 6px; }
     .weather-val { margin: 3px 0; font-size: 0.85rem; color: #334155; }
     .temp-highlight { font-size: 1.2rem; font-weight: bold; color: var(--accent); }
+    .weather-icon { font-size: 2.2rem; line-height: 1.1; min-height: 2.4rem; }
+    .weather-desc { font-size: 0.78rem; color: #64748b; min-height: 1.1rem; margin-bottom: 4px; }
 
     .btn {
       display: inline-block;
@@ -269,6 +271,25 @@
       margin-top: 4px;
     }
     .btn:hover { background: var(--primary); }
+
+    /* Route notices (inside map card) */
+    .route-notices { margin-top: 16px; }
+    .route-notices h3 { margin: 0 0 4px; font-size: 1rem; color: var(--primary); }
+    .route-notices .checked { font-size: 0.78rem; color: #64748b; margin: 0 0 10px; }
+    .notice {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+      color: #334155;
+    }
+    .notice.info { background: #f1f5f9; border-color: var(--border); border-left-color: var(--secondary); }
+    .notice strong { display: block; color: var(--primary); margin-bottom: 2px; }
+    .notice-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .notice-links .btn { margin: 0; }
     .map-container {
       width: 100%;
       height: 480px;
@@ -346,6 +367,19 @@
       <div class="map-container">
         <iframe src="https://www.google.com/maps/d/embed?mid=1wkxilOeZ8Wxsf1P3uQIe6SCZmjR6oYg&ehbc=2E312F"></iframe>
       </div>
+
+      <div class="route-notices" id="route-notices">
+        <h3>Route notices</h3>
+
+        <div class="notice info">
+          <strong>Robin Hood&rsquo;s Bay erosion diversion </strong>
+          The Cleveland Way and England Coast Path are diverted inland at the eastern end of Mount Pleasant North, across Rocket Post Field and down an accessible ramp onto a short stretch of the Cinder Track into the village.
+        </div>
+
+        <div class="notice-links">
+          <a href="https://www.nationaltrail.co.uk/en_GB/trails/cleveland-way/trail-information/" target="_blank" rel="noopener" class="btn">Official trail info &amp; diversions</a>
+        </div>
+      </div>
     </div>
 
     <!-- Weather Section -->
@@ -358,6 +392,8 @@
         <div class="weather-card-box" id="wx-scarborough">
           <strong>Scarborough</strong>
           <span class="slot" id="ws-scarborough">08:00 - 09:00</span>
+          <div class="weather-icon" id="wi-scarborough" role="img" aria-label=""></div>
+          <div class="weather-desc" id="wd-scarborough"></div>
           <div class="weather-val temp-highlight" id="wt-scarborough">--°C</div>
           <div class="weather-val" id="ww-scarborough">Wind: --</div>
           <div class="weather-val" id="wc-scarborough">Cloud: --</div>
@@ -367,6 +403,8 @@
         <div class="weather-card-box" id="wx-cloughton">
           <strong>Cloughton</strong>
           <span class="slot" id="ws-cloughton">10:00 - 11:00</span>
+          <div class="weather-icon" id="wi-cloughton" role="img" aria-label=""></div>
+          <div class="weather-desc" id="wd-cloughton"></div>
           <div class="weather-val temp-highlight" id="wt-cloughton">--°C</div>
           <div class="weather-val" id="ww-cloughton">Wind: --</div>
           <div class="weather-val" id="wc-cloughton">Cloud: --</div>
@@ -376,6 +414,8 @@
         <div class="weather-card-box" id="wx-ravenscar">
           <strong>Ravenscar</strong>
           <span class="slot" id="ws-ravenscar">12:00 - 13:00</span>
+          <div class="weather-icon" id="wi-ravenscar" role="img" aria-label=""></div>
+          <div class="weather-desc" id="wd-ravenscar"></div>
           <div class="weather-val temp-highlight" id="wt-ravenscar">--°C</div>
           <div class="weather-val" id="ww-ravenscar">Wind: --</div>
           <div class="weather-val" id="wc-ravenscar">Cloud: --</div>
@@ -385,6 +425,8 @@
         <div class="weather-card-box" id="wx-bay">
           <strong>Robin Hood's Bay</strong>
           <span class="slot" id="ws-bay">15:00 - 16:00</span>
+          <div class="weather-icon" id="wi-bay" role="img" aria-label=""></div>
+          <div class="weather-desc" id="wd-bay"></div>
           <div class="weather-val temp-highlight" id="wt-bay">--°C</div>
           <div class="weather-val" id="ww-bay">Wind: --</div>
           <div class="weather-val" id="wc-bay">Cloud: --</div>
@@ -394,6 +436,8 @@
         <div class="weather-card-box" id="wx-whitby">
           <strong>Whitby</strong>
           <span class="slot" id="ws-whitby">18:00 - 19:00</span>
+          <div class="weather-icon" id="wi-whitby" role="img" aria-label=""></div>
+          <div class="weather-desc" id="wd-whitby"></div>
           <div class="weather-val temp-highlight" id="wt-whitby">--°C</div>
           <div class="weather-val" id="ww-whitby">Wind: --</div>
           <div class="weather-val" id="wc-whitby">Cloud: --</div>
@@ -572,7 +616,40 @@
       fetchOpenMeteoData(startInput);
     }
 
+    // WMO weather codes (as returned by Open-Meteo) -> [day icon, night icon, description]
+    function weatherInfo(code, isDay) {
+      const d = isDay !== 0; // treat missing as daytime
+      const t = (day, night, text) => ({ icon: d ? day : night, text });
+      switch (code) {
+        case 0:  return t('\u2600\uFE0F', '\uD83C\uDF19', d ? 'Clear' : 'Clear night');
+        case 1:  return t('\uD83C\uDF24\uFE0F', '\uD83C\uDF19', 'Mainly clear');
+        case 2:  return t('\u26C5', '\u2601\uFE0F', 'Partly cloudy');
+        case 3:  return t('\u2601\uFE0F', '\u2601\uFE0F', 'Overcast');
+        case 45: case 48: return t('\uD83C\uDF2B\uFE0F', '\uD83C\uDF2B\uFE0F', 'Fog');
+        case 51: case 53: case 55: return t('\uD83C\uDF26\uFE0F', '\uD83C\uDF27\uFE0F', 'Drizzle');
+        case 56: case 57: return t('\uD83C\uDF27\uFE0F', '\uD83C\uDF27\uFE0F', 'Freezing drizzle');
+        case 61: return t('\uD83C\uDF26\uFE0F', '\uD83C\uDF27\uFE0F', 'Light rain');
+        case 63: return t('\uD83C\uDF27\uFE0F', '\uD83C\uDF27\uFE0F', 'Rain');
+        case 65: return t('\uD83C\uDF27\uFE0F', '\uD83C\uDF27\uFE0F', 'Heavy rain');
+        case 66: case 67: return t('\uD83C\uDF27\uFE0F', '\uD83C\uDF27\uFE0F', 'Freezing rain');
+        case 71: case 73: case 75: case 77: return t('\uD83C\uDF28\uFE0F', '\uD83C\uDF28\uFE0F', 'Snow');
+        case 80: case 81: return t('\uD83C\uDF26\uFE0F', '\uD83C\uDF27\uFE0F', 'Showers');
+        case 82: return t('\uD83C\uDF27\uFE0F', '\uD83C\uDF27\uFE0F', 'Heavy showers');
+        case 85: case 86: return t('\uD83C\uDF28\uFE0F', '\uD83C\uDF28\uFE0F', 'Snow showers');
+        case 95: case 96: case 99: return t('\u26C8\uFE0F', '\u26C8\uFE0F', 'Thunderstorm');
+        default: return { icon: '', text: '' };
+      }
+    }
+
+    function setIcon(loc, info) {
+      const el = document.getElementById(`wi-${loc.id}`);
+      el.innerText = info.icon;
+      el.setAttribute('aria-label', info.text);
+      document.getElementById(`wd-${loc.id}`).innerText = info.text;
+    }
+
     function applyFallback(loc) {
+      setIcon(loc, { icon: '', text: '' }); // no icon for typical-conditions data
       const fb = baselineWx[loc.id];
       document.getElementById(`wt-${loc.id}`).innerText = `~${fb.temp}°C (typical)`;
       document.getElementById(`ww-${loc.id}`).innerText = `Wind: ~${fb.wind}`;
@@ -590,7 +667,7 @@
       const url = 'https://api.open-meteo.com/v1/forecast'
         + '?latitude=' + locations.map(l => l.lat).join(',')
         + '&longitude=' + locations.map(l => l.lon).join(',')
-        + '&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m'
+        + '&hourly=temperature_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m,weather_code,is_day'
         + '&wind_speed_unit=mph'
         + '&timezone=Europe%2FLondon'
         + '&start_date=' + TRIP_DATE
@@ -620,6 +697,10 @@
           const dir = compass(h.wind_direction_10m[idx]);
           const cloud = h.cloud_cover[idx];
           const rain = h.precipitation[idx];
+
+          const code = h.weather_code ? h.weather_code[idx] : undefined;
+          const isDay = h.is_day ? h.is_day[idx] : 1;
+          setIcon(loc, weatherInfo(code, isDay));
 
           document.getElementById(`wt-${loc.id}`).innerText = `${temp}°C`;
           document.getElementById(`ww-${loc.id}`).innerText = `Wind: ${wind} mph ${dir}`;
